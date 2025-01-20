@@ -5,24 +5,25 @@ import styled from 'styled-components';
 const LayoutContainer = styled.div`
   display: flex;
   height: 100vh;
-  background-position: center;
-  background-size: 50%;
-  background-color:rgb(240, 227, 238);
- 
- /* background-image: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.5)),
-              url('clem-onojeghuo-HxHdSIesKg4-unsplash.jpg'); */
-
-  
-  /* background-image: url('clem-onojeghuo-HxHdSIesKg4-unsplash.jpg')*/
+  background-color: rgb(240, 238, 227);
+  /* background-color: rgb(240, 227, 238); */
 `;
 
 const Title = styled.h1`
+  position: fixed;
+  z-index: 1008;
+  padding-left: 20px;
+  background-color: rgb(255, 0, 170);
 
-    position: fixed;
-    z-index: 1008;
-    padding-left: 20px;
-    background-color:rgb(255, 0, 170);
+@media (max-width: 720px) {
+  position: fixed;
+  z-index: 10010;
+  top: -10px;
+  right: 50px;
 
+  
+
+}
 
 `;
 
@@ -39,11 +40,11 @@ const ImageCarousel = styled.div`
   border-radius: 10px;
 
   @media (max-width: 720px) {
-
-width: 100%;
-width: 50%;
-height: 50%;
-}
+    width: 100%;
+    height: 90vh;
+    margin: 0;
+    border-radius: 0;
+  }
 `;
 
 const CarouselImage = styled.img`
@@ -55,13 +56,6 @@ const CarouselImage = styled.img`
   left: 0;
   opacity: ${({ isActive }) => (isActive ? 1 : 0)};
   transition: opacity 1s ease-in-out;
-
-  @media (max-width: 720px) {
-
-    width: 100%;
-    width: 10%;
-    height: 10%;
-  }
 `;
 
 const RightSection = styled.div`
@@ -70,7 +64,7 @@ const RightSection = styled.div`
   flex-direction: column;
 
   @media (max-width: 720px) {
-    width: 100%;
+    display: none; // Hide RightSection on mobile
   }
 `;
 
@@ -83,7 +77,7 @@ const Navbar = styled.nav`
   border-bottom: 1px solid #ccc;
 
   @media (max-width: 720px) {
-    width: 10%;
+    display: none; // Hide Navbar on mobile
   }
 `;
 
@@ -91,25 +85,96 @@ const NavItem = styled.a`
   text-decoration: none;
   color: #333;
   font-size: 1.2rem;
-  position: sticky;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   padding: 10px;
-  
-  &:hover {
-    color:rgb(228, 228, 228);
-    background-color:rgb(255, 0, 170);
-    border-radius: 5px;
+  color: black;
+  background-color: rgb(255, 0, 170);
+  border-radius: 5px;
+  margin-right: 20px;
 
+  &:hover {
+    color: rgb(0, 0, 0);
+    background-color: rgb(228, 228, 228);
+    border-radius: 5px;
   }
 `;
 
-const Buttoner = styled.div`
-  color:rgb(34, 34, 34);
-  border-radius: 5px;
-
+const BurgerMenu = styled.div`
+  display: none;
+  @media (max-width: 720px) {
+    display: block;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1001;
+    cursor: pointer;
+    font-size: 24px;
+    color: rgb(255, 0, 170);
+  }
 `;
+
+const MobileNavbar = styled.nav`
+  display: none;
+  @media (max-width: 720px) {
+    display: flex;
+    flex-direction: row-reverse;
+    position: absolute;
+    top: 60px;
+    right: ${({ isOpen }) => (isOpen ? '0' : '-100%')};
+    /* background-color:  rgb(228, 228, 228); */
+    width: 80%;
+    z-index: 1000;
+    gap: 20px;
+    transition: right 0.3s ease-in-out;
+    border-radius: 5px;
+    font-weight: bold;
+  }
+`;
+
+/*
+
+const MobileNavbar = styled.nav`
+  display: none;
+  @media (max-width: 720px) {
+    display: ${({ isOpen }) => (isOpen ? 'flex' : 'none')};
+    flex-direction: row-reverse;
+    position: absolute;
+    top: 4px;
+    right: ${({ isOpen }) => (isOpen ? '0' : '-100%')};
+    background-color:  rgb(228, 228, 228);;
+    width: 100%;
+    z-index: 1000;
+    gap: 20px;
+    transition: right 0.3s ease-in-out;
+  }
+`;
+
+*/
+
+const Description = styled.p`
+  display: ${({ isVisible }) => (isVisible ? 'block' : 'none')};
+  position: absolute;
+  bottom: 0; 
+  background-color: rgba(255, 0, 170, 0.9);
+  color: white;
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+  transition: transform 0.5s ease-in-out;
+  transform: ${({ isVisible }) => (isVisible ? 'translateY(0)' : 'translateY(100%)')};
+
+  @media (max-width: 720px) {
+    margin-top:60px;
+    margin-left: 30px;
+    padding: 40px;
+    height: 40vh ;
+    font-size: 3.5vh;
+    position: relative;
+    text-align: right;
+    top: 20vh;
+    transition: right 0.3s ease-in-out;
+  }
+`;
+
 const Content = styled.div`
   flex: 1;
   overflow-y: auto;
@@ -118,6 +183,9 @@ const Content = styled.div`
 
 const Layout = ({ children }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDescriptionVisible, setIsDescriptionVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 720);
 
   const images = [
     '/img-7.jpg',
@@ -137,40 +205,74 @@ const Layout = ({ children }) => {
     '/img-12.jpg',
     '/img-11.jpg',
     '/img-10.jpg',
- ];
+  ];
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 3000); // Switch images every 3 seconds
+    }, 3000);
 
-    return () => clearInterval(interval); // Cleanup interval on unmount
+    return () => clearInterval(interval);
   }, [images.length]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 720);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <LayoutContainer>
-      <ImageCarousel>
-        <Title>Saint Nails</Title>
-        {images.map((image, index) => (
-          <CarouselImage
-            key={index}
-            src={image}
-            alt={`Nail Style ${index + 1}`}
-            isActive={index === currentImageIndex}
-          />
-        ))}
-      </ImageCarousel>
-      <RightSection>
-        <Navbar>
-          <NavItem href="/">Home</NavItem>
-          <NavItem href="/about">About</NavItem>
-          <NavItem href="/bookings">Bookings</NavItem>
-        </Navbar>
-        <Content>{children}</Content>
-      </RightSection>
+      {isMobile ? (
+        <>
+          <BurgerMenu onClick={() => setIsMenuOpen(!isMenuOpen)}>☰</BurgerMenu>
+          <MobileNavbar isOpen={isMenuOpen}>
+            <NavItem href="/">Home</NavItem>
+            <NavItem href="/about">About</NavItem>
+            <NavItem href="/bookings">Bookings</NavItem>
+          </MobileNavbar>
+          <ImageCarousel onClick={() => setIsDescriptionVisible(!isDescriptionVisible)}>
+            {images.map((image, index) => (
+              <CarouselImage
+                key={index}
+                src={image}
+                alt={`Nail Style ${index + 1}`}
+                isActive={index === currentImageIndex}
+              />
+            ))}
+            <Title>Saint Nails</Title>
+            <Description isVisible={isDescriptionVisible}>
+              Nails crafted with care. Located in Braamfontein | Walk-in/ appointment via WhatsApp @ +27 61 696 3634.
+            </Description>
+          </ImageCarousel>
+        </>
+      ) : (
+        <>
+          <ImageCarousel>
+            <Title>Saint Nails</Title>
+            {images.map((image, index) => (
+              <CarouselImage
+                key={index}
+                src={image}
+                alt={`Nail Style ${index + 1}`}
+                isActive={index === currentImageIndex}
+              />
+            ))}
+          </ImageCarousel>
+          <RightSection>
+            <Navbar>
+              <NavItem href="/">Home</NavItem>
+              <NavItem href="/about">About</NavItem>
+              <NavItem href="/bookings">Bookings</NavItem>
+            </Navbar>
+            <Content>{children}</Content>
+          </RightSection>
+        </>
+      )}
     </LayoutContainer>
   );
 };
 
 export default Layout;
-
