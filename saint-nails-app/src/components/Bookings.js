@@ -3,6 +3,14 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Modal from './Modal';
 
+const BookingsContainer = styled.div`
+  padding: 20px;
+  background-color: rgb(240, 238, 227);
+  height: 100vh;
+  overflow-y: auto;
+  display: none;
+`;
+
 const BookingItem = styled.div`
   color: white;
   display: flex;
@@ -16,12 +24,6 @@ const BookingItem = styled.div`
   background-position: 200px -140px;
   transition: transform 0.3s ease-in-out;
   transform: ${({ isSelected }) => (isSelected ? 'translateY(0)' : 'translateY(0)')};
-
-  @media (max-width: 720px) {
-    margin: 10px;
-    padding: 10px;
-    background-position: center;
-  }
 `;
 
 const BookingImage = styled.img`
@@ -31,11 +33,6 @@ const BookingImage = styled.img`
   object-fit: cover;
   margin-right: 10px;
   padding-left: 20px;
-
-  @media (max-width: 720px) {
-    width: 50px;
-    height: 50px;
-  }
 `;
 
 const BookingDetails = styled.div`
@@ -45,7 +42,7 @@ const BookingDetails = styled.div`
 
 const Bookings = ({ bookings, handleBookingClick, selectedBooking, isModalOpen, handleCloseModal }) => {
   return (
-    <>
+    <BookingsContainer>
       {bookings.map((booking) => (
         <BookingItem
           key={booking.id}
@@ -69,7 +66,7 @@ const Bookings = ({ bookings, handleBookingClick, selectedBooking, isModalOpen, 
           </>
         )}
       </Modal>
-    </>
+    </BookingsContainer>
   );
 };
 
